@@ -28,6 +28,7 @@ import Data.Char (isAlphaNum, isDigit, toLower, digitToInt)
 import Data.ByteString.Builder.Prim (cstring)
 import Distribution.Simple.Utils (safeHead)
 import System.Posix (SystemID(machine))
+import GHCi.Message (THMessage(Reify))
 
 -- =====================================================================
 -- Parte A: recursión explícita.
@@ -77,29 +78,59 @@ esPalindromo string = comparacion (normalizar string)
 
 
 -- A2
--- Explica aquí, en dos o tres líneas, por qué tu solución recorre la
--- lista una sola vez:
---
+-- La funcion auxiliar recursiva que chequea el primer elemento de la lista para guardarlo como mayor y menor.
+-- Luego toma el siguiente elemento, los compara con el mayor y menor actual sustituyendolos dependiendo del caso,
+-- entonces repite esto con el siguiente elemento hasta que no hayan mas elementos, pasando solo una vez por la lista.
 
 -- Funciones Auxiliares de A2
 
 maxyMin :: (Ord a) => a -> a -> [a] -> (a, a)
-maxyMin mayor menor [] = (mayor, menor)
+maxyMin mayor menor [] = (mayor, menor) 
 maxyMin mayor menor (x:xs) =
   maxyMin (if x > mayor then x else mayor) 
   (if x < menor then x else menor)
   xs
 
+-- Funcion Principal A2
 mayorYMenor :: Ord a => [a] -> Maybe (a, a)
 mayorYMenor [] = Nothing
 mayorYMenor (x:xs) = Just (maxyMin x x xs)
 
 -- A3
+
+-- Funcion Auxiliares de A3
+
+chequearFormato :: String -> Bool
+chequearFormato [h1, h2, ':', m1, m2] = 
+  isDigit h1 && isDigit h2 && isDigit m1 && isDigit m2
+chequearFormato _ = False
+
+convertirStrEnInt :: String -> Int
+convertirStrEnInt txt = read num :: Int
+  where num = [txt !! 0, txt !! 1]
+
 leerHora :: String -> Either String (Int, Int)
-leerHora = undefined
+leerHora xs
+  | not (chequearFormato xs) = Left "formato inválido"
+  | hour >= 24 && min >= 60 = Left "hora fuera de rango"
+  | hour >= 24 = Left "hora fuera de rango"
+  | min >= 60 = Left "minutos fuera de rango"
+  | otherwise = Right (hour, min)
+  where hour = convertirStrEnInt(xs)
+        min = convertirStrEnInt(drop (3) xs)
 
 duracion :: String -> String -> Either String Int
-duracion = undefined
+duracion primera segunda = 
+  case leerHora primera of
+    Left errorPrimera -> Left errorPrimera
+    Right (hour1, min1) -> case leerHora segunda of
+      Left errorSegunda -> Left errorSegunda
+      Right (hour2, min2) -> 
+        let start = hour1*60 +min1
+            end = hour2*60 + min2
+        in Right (if end < start
+                  then end + 24 * 60 - start
+                  else end - start)
 
 -- =====================================================================
 -- Parte B: orden superior.
