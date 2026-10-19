@@ -27,6 +27,7 @@ module Tarea1
 import Data.Char (isAlphaNum, isDigit, toLower, digitToInt)
 import Data.ByteString.Builder.Prim (cstring)
 import Distribution.Simple.Utils (safeHead)
+import System.Posix (SystemID(machine))
 
 -- =====================================================================
 -- Parte A: recursión explícita.
@@ -79,8 +80,19 @@ esPalindromo string = comparacion (normalizar string)
 -- Explica aquí, en dos o tres líneas, por qué tu solución recorre la
 -- lista una sola vez:
 --
+
+-- Funciones Auxiliares de A2
+
+maxyMin :: (Ord a) => a -> a -> [a] -> (a, a)
+maxyMin mayor menor [] = (mayor, menor)
+maxyMin mayor menor (x:xs) =
+  maxyMin (if x > mayor then x else mayor) 
+  (if x < menor then x else menor)
+  xs
+
 mayorYMenor :: Ord a => [a] -> Maybe (a, a)
-mayorYMenor = undefined
+mayorYMenor [] = Nothing
+mayorYMenor (x:xs) = Just (maxyMin x x xs)
 
 -- A3
 leerHora :: String -> Either String (Int, Int)
