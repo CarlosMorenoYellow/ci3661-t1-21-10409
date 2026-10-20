@@ -5,7 +5,8 @@
 --  Carnet: 21-10409
 --
 --  Declaración de uso de herramientas de IA (obligatoria, ver enunciado):
---  Copilot (Usado para consultas sobre sintaxis de Haskell)
+--  Copilot (Usado para consultas sobre sintaxis y funciones estandar de Haskell)
+--  Funcione estandar consultadas: elem y concatMap
 -- =====================================================================
 --  No cambies el nombre del módulo ni la lista de exportación, ni las
 --  firmas de las funciones. Puedes agregar todas las funciones auxiliares
@@ -147,6 +148,7 @@ chequearUmbral umbral xs
   |  null (foldl (\add x -> if x > umbral then x : add else add) [] xs) = True
   |  otherwise = False
 
+-- funcion principal del B1
 
 promedioSobreUmbral :: Double -> [Double] -> Maybe Double
 promedioSobreUmbral umbral cs
@@ -158,20 +160,17 @@ promedioSobreUmbral umbral cs
 
 -- B2
 
--- B2)
-
-chequeoCasilla :: (Int, Int) -> Bool
-chequeoCasilla cas
-  | fila < 1 || fila > 8 || col < 1 || col > 8 = False
-  | otherwise = True
-  where fila = fst cas
-        col = snd cas
-
 movimientosCaballo :: (Int, Int) -> [(Int, Int)]
-movimientosCaballo = undefined
+movimientosCaballo (fila, columna) = 
+  [(fil,col) | fil <- [1..8],
+               col <- [1..8],
+               (abs (fil - fila) == 1 && abs (col - columna) == 2 ) ||
+               (abs (fil - fila) == 2 && abs (col - columna) == 1 )]
 
 enDosSaltos :: (Int, Int) -> Int
-enDosSaltos = undefined
+enDosSaltos (fila, columna) = length (foldl (\vistos sig -> if elem sig vistos then vistos else sig : vistos) 
+                                      [] 
+                                      (concatMap movimientosCaballo(movimientosCaballo((fila, columna))))) 
 
 -- B3
 miMap :: (a -> b) -> [a] -> [b]
