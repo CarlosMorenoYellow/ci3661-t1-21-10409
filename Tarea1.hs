@@ -26,7 +26,7 @@ module Tarea1
 
 import Data.Char (isAlphaNum, isDigit, toLower, digitToInt)
 import Data.ByteString.Builder.Prim (cstring)
-import Distribution.Simple.Utils (safeHead)
+import Distribution.Simple.Utils (safeHead, xargs)
 import System.Posix (SystemID(machine))
 import GHCi.Message (THMessage(Reify))
 
@@ -139,10 +139,34 @@ duracion primera segunda =
 -- =====================================================================
 
 -- B1
+
+--funciones auxiliares B1
+
+chequearUmbral :: Double -> [Double] -> Bool
+chequearUmbral umbral xs
+  |  null (foldl (\add x -> if x > umbral then x : add else add) [] xs) = True
+  |  otherwise = False
+
+
 promedioSobreUmbral :: Double -> [Double] -> Maybe Double
-promedioSobreUmbral = undefined
+promedioSobreUmbral umbral cs
+  | chequearUmbral umbral cs = Nothing 
+  | otherwise = Just (num / dem)
+  where
+    num = (foldl (\sum x -> if x > umbral then x + sum else sum) 0 cs)
+    dem = fromIntegral(length (foldl (\add x -> if x > umbral then x : add else add) [] cs))
 
 -- B2
+
+-- B2)
+
+chequeoCasilla :: (Int, Int) -> Bool
+chequeoCasilla cas
+  | fila < 1 || fila > 8 || col < 1 || col > 8 = False
+  | otherwise = True
+  where fila = fst cas
+        col = snd cas
+
 movimientosCaballo :: (Int, Int) -> [(Int, Int)]
 movimientosCaballo = undefined
 
