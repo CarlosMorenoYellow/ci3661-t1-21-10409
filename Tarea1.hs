@@ -25,11 +25,7 @@ module Tarea1
   , miFoldl
   ) where
 
-import Data.Char (isAlphaNum, isDigit, toLower, digitToInt)
-import Data.ByteString.Builder.Prim (cstring)
-import Distribution.Simple.Utils (safeHead, xargs)
-import System.Posix (SystemID(machine))
-import GHCi.Message (THMessage(Reify))
+import Data.Char (isAlphaNum, isDigit, toLower)
 
 -- =====================================================================
 -- Parte A: recursión explícita.
@@ -113,12 +109,12 @@ convertirStrEnInt txt = read num :: Int
 leerHora :: String -> Either String (Int, Int)
 leerHora xs
   | not (chequearFormato xs) = Left "formato inválido"
-  | hour >= 24 && min >= 60 = Left "hora fuera de rango"
+  | hour >= 24 && minu >= 60 = Left "hora fuera de rango"
   | hour >= 24 = Left "hora fuera de rango"
-  | min >= 60 = Left "minutos fuera de rango"
-  | otherwise = Right (hour, min)
+  | minu >= 60 = Left "minutos fuera de rango"
+  | otherwise = Right (hour, minu)
   where hour = convertirStrEnInt(xs)
-        min = convertirStrEnInt(drop (3) xs)
+        minu = convertirStrEnInt(drop (3) xs)
 
 duracion :: String -> String -> Either String Int
 duracion primera segunda = 
@@ -155,7 +151,7 @@ promedioSobreUmbral umbral cs
   | chequearUmbral umbral cs = Nothing 
   | otherwise = Just (num / dem)
   where
-    num = (foldl (\sum x -> if x > umbral then x + sum else sum) 0 cs)
+    num = (foldl (\suma x -> if x > umbral then x + suma else suma) 0 cs)
     dem = fromIntegral(length (foldl (\add x -> if x > umbral then x : add else add) [] cs))
 
 -- B2
@@ -174,10 +170,10 @@ enDosSaltos (fila, columna) = length (foldl (\vistos sig -> if elem sig vistos t
 
 -- B3
 miMap :: (a -> b) -> [a] -> [b]
-miMap = undefined
+miMap f lista= foldr (\mapea elmts -> f mapea : elmts) [] lista
 
 miFilter :: (a -> Bool) -> [a] -> [a]
-miFilter = undefined
+miFilter f lista = foldr (\elmt elmts -> if f elmt then elmt : elmts else elmts) [] lista
 
 miFoldl :: (b -> a -> b) -> b -> [a] -> b
-miFoldl = undefined
+miFoldl f inicial lista = foldr (\elmt sig elmts -> sig (f elmts elmt)) id lista inicial
