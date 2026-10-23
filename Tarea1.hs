@@ -7,6 +7,7 @@
 --  Declaración de uso de herramientas de IA (obligatoria, ver enunciado):
 --  Copilot (Usado para consultas sobre sintaxis y funciones estandar de Haskell)
 --  Funcione estandar consultadas: elem y concatMap
+--  Usado para ayudar con la pregunta 7
 -- =====================================================================
 --  No cambies el nombre del módulo ni la lista de exportación, ni las
 --  firmas de las funciones. Puedes agregar todas las funciones auxiliares
